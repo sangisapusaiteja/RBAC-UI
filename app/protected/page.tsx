@@ -1,4 +1,3 @@
-import FetchDataSteps from "@/components/tutorial/fetch-data-steps";
 import { createClient } from "@/utils/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -14,24 +13,25 @@ export default async function ProtectedPage() {
     return redirect("/sign-in");
   }
 
+  const { data: userRole } = await supabase
+    .from("user_roles")
+    .select("*")
+    .eq("user_id", user?.id);
   return (
-    <div className="flex-1 w-full flex flex-col gap-12">
-      <div className="w-full">
-        <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-          <InfoIcon size="16" strokeWidth={2} />
-          This is a protected page that you can only see as an authenticated
-          user
-        </div>
-      </div>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Your user details</h2>
-        <pre className="text-xs font-mono p-3 rounded border max-h-32 overflow-auto">
-          {JSON.stringify(user, null, 2)}
-        </pre>
-      </div>
-      <div>
-        <h2 className="font-bold text-2xl mb-4">Next steps</h2>
-        <FetchDataSteps />
+    <div className="flex-1 w-full h-[600px] flex flex-col items-center gap-12 text-white bg-gradient-to-b from-black to-purple-700 p-8">
+      <div className="flex flex-col gap-4 items-start bg-black bg-opacity-70 p-6 rounded-lg shadow-lg">
+        <h2 className="font-bold text-3xl mb-4 border-b-2 border-purple-500 pb-2">
+          Your User Details
+        </h2>
+        <p className="text-lg">
+          Hello{" "}
+          <span className="font-semibold">{JSON.stringify(user?.email)}</span>,
+          Welcome!
+        </p>
+        <p className="text-lg">
+          Your role is{" "}
+          <span className="font-semibold">{userRole?.[0]?.role}</span>
+        </p>
       </div>
     </div>
   );
